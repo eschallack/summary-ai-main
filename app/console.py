@@ -11,10 +11,8 @@ from app.llm.llm_utils import ollama_serve
 from typing import Union
 from collections.abc import Callable
 from app.utils import load_spreadsheet
-import requests
 import sys
 import webbrowser
-import subprocess
 from app.models import validate_dataframe, bulk_short_synopsis_schema
 from threading import Thread
 from http.server import HTTPServer, SimpleHTTPRequestHandler
@@ -28,6 +26,17 @@ class LLMConsole():
     def __init__(self):
         self.main_menu_choices = ['short synopsis', 'long synopsis']
     def prompt_loop(self, prompt:str, choices:Union[list, dict]=None, defualt=""):
+        """Prompts the user for choice, and searches the class object for methods
+        matching the choices. For example, the choice `main menu` will execute `self.main_menu()`
+        #TODO add support for kwarg parsing
+        Args:
+            prompt (str): _description_
+            choices (Union[list, dict], optional): _description_. Defaults to None.
+            defualt (str, optional): _description_. Defaults to "".
+
+        Returns:
+            _type_: _description_
+        """
         if not choices:
             response = pmt.ask(prompt=prompt, console=cns, default=defualt)
             if response == "":
@@ -62,21 +71,20 @@ class LLMConsole():
     def help(self):
         cns.log("[green]Opening help guide in a browser window")
 
-        # Start a local HTTP server
         def start_server():
-            os.chdir("app/usage")  # Change to the directory containing help files
+            os.chdir("app/usage")
             httpd = HTTPServer(("localhost", 8000), SimpleHTTPRequestHandler)
             httpd.serve_forever()
 
-        # Start the server in a separate thread
         server_thread = Thread(target=start_server, daemon=True)
         server_thread.start()
 
-        # Open the help guide in the browser
         webbrowser.open("http://localhost:8000/usage_guide.html")
+        
     def quit(self):
         cns.print('[red]Exiting...[/]')
         sys.exit(0)
+        
     def main_menu(self):
         cns.print(cns_cfg.main_menu)
         choice_menu, chocie_dict = self.generate_menu(self.main_menu_choices)
@@ -105,6 +113,7 @@ class LLMConsole():
         choice_dict['h'] = 'help'
         choice_dict['x'] = 'quit'
         return "\n".join(choice_menu), choice_dict
+    
     def load_ollama(self):
             if ollama_serve():
                 cns.log('AI Engine loaded successfully')
@@ -113,6 +122,7 @@ class LLMConsole():
                 error_console.log("""ERROR: It looks like the Ollama program is not running on your computer.\nAn attempt was made to open it, but was unsuccessfull.\n
                                     Likely, Ollama is either not on your computer, or not in your system's PATH enviroment variable. Please exit and open Ollama.""")
                 self.quit()
+                
     def short_synopsis(self):
         with cns.status("Loading AI, please wait...", spinner="dots7"):
             self.load_ollama()
@@ -143,6 +153,7 @@ class LLMConsole():
             cns.log(f"Character Count: [{char_count_color}]{char_count_str}[/]")
             cns.log(msg)
             return res
+        
         def _max_char_length():
             max_character_length = self.prompt_loop(" Max Character length [i]Optional[/]", defualt="80")
             try:
@@ -156,6 +167,7 @@ class LLMConsole():
             max_character_length = _max_char_length()
             context = self.prompt_loop("Additional Context (Name of the episode's show, genre, keywords, etc) [i]Optional[/]", defualt="None")
             _short_synopsis(synopsis, context, max_character_length)
+            
         elif response == 'bulk shorten synopsis':
             df, filepath = self.bulk_import()
             ext = filepath.suffix
@@ -174,6 +186,8 @@ class LLMConsole():
             elif ext == ".xlsx":
                 df.to_excel(export_path, index=False)
             cns.log(f"[green]Exported to {export_path}")
+            
         self.main_menu()
+        
     def long_synopsis(self):
         pass
