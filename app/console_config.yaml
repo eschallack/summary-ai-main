@@ -1,0 +1,11 @@
+main_menu: |
+  Welcome to LLM AI Text Generator! Select from the options below or...
+    Type h for help docs
+    Type m for main menu
+    Type x to exit the program
+general_error: |
+  Error!
+not_choice_error: |
+  Option not availible, try again.
+no_response_error: |
+  Sorry, didn't catch that. Try again.

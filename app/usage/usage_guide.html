@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #252526;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            position: sticky;
+            top: 60px;
+        }
+        nav a {
+            color: #d4d4d4;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1em;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 20px;
+        }
+        section {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+        section h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        section p {
+            font-size: 1em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Synopsis AI - Help Guide</h1>
+    </header>
+    <nav>
+        <a href="#install">How to Install</a>
+        <a href="#usage">Basic Usage</a>
+    </nav>
+    <main>
+        <section id="install">
+            <h2>How to Install</h2>
+            <p>Learn how to install the application by following the step-by-step instructions provided here.</p>
+            <br>
+            <h3>Step 1</h3>
+            <p>Make sure <a href="https://www.python.org/downloads/windows/">Python 3.12</a> and <a href="https://ollama.com/download/windows">Ollama</a> are installed on your computer
+            </p>
+            <h3>Step 2</h3>
+            <p>
+                download the code and open the
+            </p>
+            <h3>Step 3</h3>
+            <p>
+                Open up a terminal (from the top bar go to terminal > new terminal) and type the following commands in order:
+            </p>
+            <p>
+                <code>python -m venv venv</code>
+                
+                <br>
+            <br>
+            <code>venv\scripts\activate</code>
+            <br>
+            <br>
+            <code>pip install -r requirements.txt</code>
+            <br>
+            <br>
+        </p><p>
+            
+            <p>start the program with the following terminal command: </p>
+            <code>python main.py</code>
+        </p>
+
+        </section>
+        <section id="usage">
+            <h2>Basic Usage</h2>
+            <h3>Main Menu</h3>
+            <p>You will be greeted with an options menu. Currently, the only working feature is short synopsis, 
+                which has options for single synopsis and bulk synopsis conversions. Type <code>1</code> to access the short synopsis menu</p>
+            <br>
+            <h3>Short Synopsis Generator</h3>
+            <h4>1) Single Synopsis</h4>
+            <p>Copy and paste in the synopsis you would like to shorten. Type the maximum character count for the synopsis (hitting enter without typing gives you the default option).<br>
+                Then, Provide the model with any context about the episode/show/standalone you think might help it generate a better short synopsis - <br> this can be anything from
+                the genre of the show to the synopsis of the show the episode is a part of. The formatting doesn't nessicarily matter, but i'd suggest doing it like:</p>
+                <p>
+
+                    <code>
+                        genres: action and adventure, show_synopsis:the show about the thing that happened.
+                    </code>
+                </p>
+            
+            <h4>2) Bulk Synopsis</h4>
+            <h5>Metadata Format</h5>
+            <p>
+                I've included an example template for the metadata here: app\examples\short_synopsis_input_format_example.xlsx
+            </p>
+            <p>
+                The following fields are required:
+            </p>
+            <ul>
+                <li>qd</li>
+                <li>title</li>
+                <li>synopsis</li>
+            </ul>
+            <p>The following fields are optional, but are used to give the model additional context:</p>
+            <ul>
+                <li>genre</li>
+                <li>keywords</li>
+                <li>show_synopsis</li>
+            </ul>
+            <h5>Usage</h5>
+            <p>you will be asked to provide the path to the spreadsheet you wish to use. <b>Ensure the path has no spaces, or use quotation marks around the path</b>.
+            </p>
+            <p>Once you provide the max character length, the bulk export will begin running.</p>
+            <p>Viewable logs are shown in the terminal, where you'll see the model iteratively attempting to create a synopsis that both makes sense and meets the character requirements.
+                another AI Performs a quality control check on the model output to ensure it's not utter nonsense.
+            </p>
+            <p>once complete, it will output the result next to the input spreadsheet.</p>
+        </section>
+    </main>
+</body>
+</html>

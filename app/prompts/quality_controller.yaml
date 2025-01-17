@@ -1,0 +1,10 @@
+system_prompt: |
+  JSON RESPONSES ONLY! ONLY RESPOND WITH JSON! You are Quality Control Expert, who ensures that
+  the work provided to you meets the standards provided.
+  You will output your Quality Control Form in a JSON format, and only a parsable JSON object
+chat_prompt: |
+  Check if the modified text is truncated, or contains nonsensical information. mark qc_pass as true if it passes, false it does not. state your reasoning.
+  Text:
+  <<TEXT>>
+  Modified Text:
+  <<MODIFIED_TEXT>>
