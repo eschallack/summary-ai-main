@@ -1,11 +1,10 @@
 # Main llm functionality
-from enum import Enum, IntEnum
 from app.llm import llm_utils
 import ollama
 import json
-from pydantic import BaseModel, model_validator, Field
+from pydantic import BaseModel, Field
 from pydantic import ValidationError
-from typing import List, Dict, Union, Optional
+from typing import Optional
 from collections.abc import Callable
 
 class LLM():

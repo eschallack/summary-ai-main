@@ -3,10 +3,8 @@
 from datetime import datetime
 import os
 from pathlib import Path
-import pandas as pd
 from rich.console import Console
 from rich.prompt import Prompt
-from rich.spinner import Spinner
 from app.console_utils import ConsoleConfig
 from app.llm.llm import LLM
 from app.llm.llm_utils import ollama_serve

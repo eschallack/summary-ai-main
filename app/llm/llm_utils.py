@@ -1,14 +1,9 @@
 # utilities for loading and validating prompts and responses.
 
-from pathlib import Path
-import yaml
-from collections.abc import Callable
-import json
 from app.utils import load_local_yaml
-from typing import List, Dict
+from typing import Dict
 import requests
 from subprocess import Popen, PIPE
-
 
 def load_local_yaml_prompt(file_path:str):
     json_template = load_local_yaml(file_path)
