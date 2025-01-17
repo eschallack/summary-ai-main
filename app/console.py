@@ -1,4 +1,4 @@
-# Console logic.
+# Logic for the console.
 # TODO: decouple bulk export logic from console
 from datetime import datetime
 import os
@@ -25,6 +25,7 @@ pmt = Prompt()
 class LLMConsole():
     def __init__(self):
         self.main_menu_choices = ['short synopsis', 'long synopsis']
+
     def prompt_loop(self, prompt:str, choices:Union[list, dict]=None, defualt=""):
         """Prompts the user for choice, and searches the class object for methods
         matching the choices. For example, the choice `main menu` will execute `self.main_menu()`
@@ -68,6 +69,7 @@ class LLMConsole():
                 return c()
             elif isinstance(c, str):
                 return c
+
     def help(self):
         cns.log("[green]Opening help guide in a browser window")
 
@@ -78,13 +80,12 @@ class LLMConsole():
 
         server_thread = Thread(target=start_server, daemon=True)
         server_thread.start()
-
         webbrowser.open("http://localhost:8000/usage_guide.html")
-        
+
     def quit(self):
         cns.print('[red]Exiting...[/]')
         sys.exit(0)
-        
+
     def main_menu(self):
         cns.print(cns_cfg.main_menu)
         choice_menu, chocie_dict = self.generate_menu(self.main_menu_choices)
@@ -95,13 +96,13 @@ class LLMConsole():
                 return getattr(self, method_name)()
         else:
             return self.main_menu()
+
     def bulk_import(self):
         filepath = self.prompt_loop("Enter the path to your csv or xlsx file")
         df = load_spreadsheet(filepath)
         if validate_dataframe(df, bulk_short_synopsis_schema):
             return df, Path(filepath)
-        
-        
+
     def generate_menu(self, choices):
         choice_menu = ["Which would you like?:\n"]
         choice_dict = {}
@@ -113,7 +114,7 @@ class LLMConsole():
         choice_dict['h'] = 'help'
         choice_dict['x'] = 'quit'
         return "\n".join(choice_menu), choice_dict
-    
+
     def load_ollama(self):
             if ollama_serve():
                 cns.log('AI Engine loaded successfully')
@@ -122,7 +123,7 @@ class LLMConsole():
                 error_console.log("""ERROR: It looks like the Ollama program is not running on your computer.\nAn attempt was made to open it, but was unsuccessfull.\n
                                     Likely, Ollama is either not on your computer, or not in your system's PATH enviroment variable. Please exit and open Ollama.""")
                 self.quit()
-                
+
     def short_synopsis(self):
         with cns.status("Loading AI, please wait...", spinner="dots7"):
             self.load_ollama()
@@ -132,8 +133,8 @@ class LLMConsole():
         response = self.prompt_loop(f"""
                         [b]Short Synopsis Generator[/]
                         [i]Shortens a Synopsis to any character length[/]
-                        {choice_menu}""", chocie_dict
-                        )
+                        {choice_menu}""", chocie_dict)
+
         def _short_synopsis(synopsis, context, max_length):
             # Additional console logging for short synopsis generation
             max_character_length = int(max_length)
@@ -154,7 +155,7 @@ class LLMConsole():
             cns.log(f"Character Count: [{char_count_color}]{char_count_str}[/]")
             cns.log(msg)
             return res
-        
+
         def _max_char_length():
             #Type Checking for the maximum character length
             max_character_length = self.prompt_loop(" Max Character length [i]Optional[/]", defualt="80")
@@ -164,13 +165,13 @@ class LLMConsole():
             except:
                 cns.log("That's not an integer! try again.")
                 return _max_char_length()
-            
+
         if response ==  'shorten a synopsis':
             synopsis = self.prompt_loop("Your synopsis [i]Required[/]")
             max_character_length = _max_char_length()
             context = self.prompt_loop("Additional Context (Name of the episode's show, genre, keywords, etc) [i]Optional[/]", defualt="None")
             _short_synopsis(synopsis, context, max_character_length)
-            
+
         elif response == 'bulk shorten synopsis':
             df, filepath = self.bulk_import()
             ext = filepath.suffix
@@ -189,9 +190,8 @@ class LLMConsole():
             elif ext == ".xlsx":
                 df.to_excel(export_path, index=False)
             cns.log(f"[green]Exported to {export_path}")
-            
         self.main_menu()
-        
+
     def long_synopsis(self):
         # TODO: implement
         pass
