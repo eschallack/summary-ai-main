@@ -1,8 +1,9 @@
-
+# utilities for loading files
 import yaml
 from pathlib import Path
 import pandas as pd
 from typing import Union
+
 def load_spreadsheet(file_path:str) -> Union[pd.DataFrame,None]:
     _here = Path(__file__).parent
     _absolute_path = (_here / '..' / file_path).resolve()
@@ -14,9 +15,11 @@ def load_spreadsheet(file_path:str) -> Union[pd.DataFrame,None]:
     else:
         print("Failed to load unknown File Extension")
         return None
+    
 def open_file(filepath:str):
     with open(filepath, 'r', encoding='utf-8') as f:
         return f.read()
+    
 def load_local_yaml(file_path:str):
     _here = Path(__file__).parent
     _absolute_path = (_here / '..' / file_path).resolve()

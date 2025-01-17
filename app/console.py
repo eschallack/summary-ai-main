@@ -1,3 +1,5 @@
+# Console logic.
+# TODO: decouple bulk export logic from console
 from datetime import datetime
 import os
 from pathlib import Path
@@ -17,7 +19,7 @@ from app.models import validate_dataframe, bulk_short_synopsis_schema
 from threading import Thread
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-cns_cfg = ConsoleConfig()
+cns_cfg = ConsoleConfig() # Provides default application messages
 cns = Console()
 error_console = Console(stderr=True, style="bold red")
 pmt = Prompt()
@@ -28,7 +30,7 @@ class LLMConsole():
     def prompt_loop(self, prompt:str, choices:Union[list, dict]=None, defualt=""):
         """Prompts the user for choice, and searches the class object for methods
         matching the choices. For example, the choice `main menu` will execute `self.main_menu()`
-        #TODO add support for kwarg parsing
+        #TODO add support for kwarg parsing from choices dict
         Args:
             prompt (str): _description_
             choices (Union[list, dict], optional): _description_. Defaults to None.
@@ -135,6 +137,7 @@ class LLMConsole():
                         {choice_menu}""", chocie_dict
                         )
         def _short_synopsis(synopsis, context, max_length):
+            # Additional console logging for short synopsis generation
             max_character_length = int(max_length)
             with cns.status("Generating a shortened synopsis, please wait", spinner="aesthetic"):
                 res, pass_count = llm.generate_with_qc_pass(synopsis, context, max_length=max_character_length)
@@ -155,6 +158,7 @@ class LLMConsole():
             return res
         
         def _max_char_length():
+            #Type Checking for the maximum character length
             max_character_length = self.prompt_loop(" Max Character length [i]Optional[/]", defualt="80")
             try:
                 max_character_length = int(max_character_length)
@@ -162,6 +166,7 @@ class LLMConsole():
             except:
                 cns.log("That's not an integer! try again.")
                 return _max_char_length()
+            
         if response ==  'shorten a synopsis':
             synopsis = self.prompt_loop("Your synopsis [i]Required[/]")
             max_character_length = _max_char_length()
@@ -190,4 +195,5 @@ class LLMConsole():
         self.main_menu()
         
     def long_synopsis(self):
+        # TODO: implement
         pass
